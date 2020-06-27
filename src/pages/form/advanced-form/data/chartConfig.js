@@ -10,10 +10,10 @@ export const chartConfigList = [
     {name:'年化率',field:'yearYeilds',show:true,type:'bar',yIndex:3},
     {name:'总支出',field:'totalCost',show:true,yIndex:1},
     {name:'期数',field:'dealCount',show:true,yIndex:4},
-    {name:'PE_TTM',lineStyle:{color:'#660099'},field:'pe',show:true,yIndex:2},
-    {name:'PE_Q2V',lineStyle:{color:'#660099'},field:'pe_q2v',show:true,yIndex:2},
-    {name:'PE_Q5V',lineStyle:{color:'#660099'},field:'pe_q5v',show:true,yIndex:2},
-    {name:'PE_Q8V',lineStyle:{color:'#660099'},field:'pe_q8v',show:true,yIndex:2}
+    {name:'PE_TTM',lineStyle:{color:'#660099'},field:'pe',show:false,yIndex:2},
+    {name:'PE_Q2V',lineStyle:{color:'#660099'},field:'pe_q2v',show:false,yIndex:2},
+    {name:'PE_Q5V',lineStyle:{color:'#660099'},field:'pe_q5v',show:false,yIndex:2},
+    {name:'PE_Q8V',lineStyle:{color:'#660099'},field:'pe_q8v',show:false,yIndex:2}
 ];
 
 export const initChartConfig = (strategies)=>{
