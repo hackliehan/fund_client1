@@ -1,7 +1,8 @@
+import { p_login } from '../config/path';
 import request from '@/utils/request';
 
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+  return request(p_login, {
     method: 'POST',
     data: params,
   });
