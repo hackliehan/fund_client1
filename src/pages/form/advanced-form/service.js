@@ -1,4 +1,3 @@
-import request from 'umi-request';
 import {
     p_fund_backtetst,
     p_fund_sty_search,
@@ -6,38 +5,24 @@ import {
     p_fund_sty_del,
     p_fund_sty_update
 } from '../../../config/path';
+import Axios from 'axios';
 
 export async function fetchBackTestData(params){
-  return request(p_fund_backtetst,{
-    method:'POST',
-    data:params
-  });
+  return Axios.post(p_fund_backtetst,params);
 }
 
 export async function fetchFundStrategies(params){
-  return request(p_fund_sty_search,{
-    method:'POST',
-    data:params
-  });
+  return Axios.post(p_fund_sty_search,params);
 }
 
 export async function addFundStrategy(params){
-  return request(p_fund_sty_add,{
-    method:'POST',
-    data:params
-  })
+  return Axios.post(p_fund_sty_add,params)
 }
 
 export async function delFundStrategy(params){
-  return request(p_fund_sty_del,{
-    method:'POST',
-    data:params
-  })
+  return Axios.post(p_fund_sty_del,params)
 }
 
 export async function updateFundStrategy(params){
-  return request(p_fund_sty_update,{
-    method:'POST',
-    data:params
-  })
+  return Axios.post(p_fund_sty_update,params)
 }

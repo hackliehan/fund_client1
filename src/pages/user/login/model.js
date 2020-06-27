@@ -13,10 +13,10 @@ const Model = {
       const response = yield call(fakeAccountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
-        payload: response,
+        payload: response.data,
       }); // Login successfully
       console.log('response',response);
-      if (response.successed) {
+      if (response.data.successed) {
         message.success('登录成功！');
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();

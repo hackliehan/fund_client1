@@ -1,7 +1,7 @@
 
 const basePath = 'http://localhost:4000';
 
-export const p_login = `${basePath}/api/login/account`;
+export const p_login = `${basePath}/account/login`;
 
 export const p_fund_backtetst = `${basePath}/fund/backtest`;
 

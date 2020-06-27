@@ -17,10 +17,10 @@ const Model = {
   effects: {
     *fetchBacktestData({ payload }, { call,put }) {
       const response = yield call(fetchBackTestData, payload);
-      if(response.successed){
+      if(response.data.successed){
         yield put({
           type:'updateBacktestRs',
-          payload:response.data
+          payload:response.data.data
         })
       }else{
         message.error('获取回测结果失败!');
@@ -28,10 +28,10 @@ const Model = {
     },
     *fetchFundStyData({ payload }, { call,put }) {
       const response = yield call(fetchFundStrategies, payload);
-      if(response.successed){
+      if(response.data.successed){
         yield put({
           type:'updateFundStrategies',
-          payload:response.data
+          payload:response.data.data
         })
       }else{
         message.error('获取策略列表失败!');
@@ -39,15 +39,15 @@ const Model = {
     },
     *addSty({payload},{call}){
       const response = yield call(addFundStrategy, payload);
-      message.success(response.message);
+      message.success(response.data.message);
     },
     *delSty({payload},{call}){
       const response = yield call(delFundStrategy, payload);
-      message.success(response.message);
+      message.success(response.data.message);
     },
     *updateSty({payload},{call}){
       const response = yield call(updateFundStrategy, payload);
-      message.success(response.message);
+      message.success(response.data.message);
     }
   },
   reducers:{
