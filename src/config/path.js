@@ -9,6 +9,6 @@ export const p_fund_sty_search = `${basePath}/fund/searchSty`;
 
 export const p_fund_sty_add = `${basePath}/fund/addSty`;
 
-export const p_fund_sty_del = `${basePath}/fund/delSty'`;
+export const p_fund_sty_del = `${basePath}/fund/delSty`;
 
 export const p_fund_sty_update = `${basePath}/fund/updateSty`;
