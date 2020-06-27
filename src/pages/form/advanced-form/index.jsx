@@ -268,10 +268,10 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       minModi,
       minPercent
     } = factory;
-    const maxStr = maxPercent === 0
+    const maxStr = maxPercent === '0'
       ? ''
       : `_${maxModi}_${maxPercent}`;
-    const minStr = minPercent === 0
+    const minStr = minPercent === '0'
       ? ''
       : `${minModi}_${minPercent}`;
     return max + maxStr + '-' + (max === min
@@ -336,7 +336,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
               {data.map((factor, index) => {
                 return (
                   <p key={index}>
-                    {getFactorName(factor)}(${factor.baseMoneyRate},${factor.factorRate})
+                    {getFactorName(factor)}({factor.baseMoneyRate},{factor.factorRate})
                   </p>
                 );
               })}
