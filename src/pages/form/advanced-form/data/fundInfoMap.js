@@ -124,14 +124,19 @@ fundIndexMap.set('090010',{
     indexCode:'000922',
     fee:0.12,
 });
-
+fundIndexMap.set('161017',{
+    fundCode:'161017',
+    fundName:'富国中证500指数',
+    indexCode:'000905',
+    fee:0.15
+});  //中证500
 // fundIndexMap.set('217027','399550');  //央视50
 
 
 
 
 // fundIndexMap.set('003318','930782');  //中证500低波动
-// fundIndexMap.set('161017','000905');  //中证500
+
 
 
 export const fundInfoMap = fundIndexMap;
