@@ -74,6 +74,13 @@ fundIndexMap.set('005241',{
     indexCode:'000300',
     fee:0.15
 });
+fundIndexMap.set('006228',{
+  fundCode:'006228',
+  fundName:'中欧医疗创新股票',
+  agent:'葛兰',
+  indexCode:'000300',
+  fee:0.15
+});
 fundIndexMap.set('161725',{
     fundCode:'161725',
     fundName:'招商中证白酒指数分级',
@@ -116,7 +123,7 @@ fundIndexMap.set('090010',{
     fundName:'大成中证红利',
     indexCode:'000922',
     fee:0.12,
-});  
+});
 
 // fundIndexMap.set('217027','399550');  //央视50
 
