@@ -1,3 +1,4 @@
+import Axios from 'axios';
 import {
     p_fund_backtetst,
     p_fund_sty_search,
@@ -5,7 +6,6 @@ import {
     p_fund_sty_del,
     p_fund_sty_update
 } from '../../../config/path';
-import Axios from 'axios';
 
 export async function fetchBackTestData(params){
   return Axios.post(p_fund_backtetst,params);

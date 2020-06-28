@@ -2,7 +2,7 @@
 import styles from '../style.less'
 
 function randomColor (){
-    return "#"+Math.random().toString(16).slice(-6);  
+    return `#${Math.random().toString(16).slice(-6)}`;  
 }
 
 export const chartConfigList = [
@@ -20,7 +20,7 @@ export const initChartConfig = (strategies)=>{
     const chartConfig = [];
     const peColor = randomColor();
     strategies.forEach(item=>{
-        const name = item.name;
+        const {name} = item;
         const singleConfig = chartConfigList.map(item=>{
             if(item.field.indexOf('pe')!== -1){
                 return {

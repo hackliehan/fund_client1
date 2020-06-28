@@ -1,5 +1,5 @@
-import {chartConfigList} from './chartConfig';
 import echarts from 'echarts'
+import {chartConfigList} from './chartConfig';
 
 export const renderChart = (chartId, data, showConfigList,strategyList) => {
     const legend = [];
@@ -56,7 +56,7 @@ export const renderChart = (chartId, data, showConfigList,strategyList) => {
                 lineStyle
             } = showList[index];
             if (show) {
-                const confName = s.name + '-' + name;
+                const confName = `${s.name  }-${  name}`;
                 series.push({
                     name: confName,
                     type: type || 'line',
@@ -95,7 +95,7 @@ export const renderChart = (chartId, data, showConfigList,strategyList) => {
             }
         },
         xAxis: {
-            data: data[0]['date']
+            data: data[0].date
         },
         yAxis,
         series

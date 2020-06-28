@@ -3,7 +3,7 @@ import { Button, Divider, Input, Popconfirm, Table, message, Select } from 'antd
 import React, { useState, useEffect } from 'react';
 import styles from '../style.less';
 
-const Option = Select.Option;
+const {Option} = Select;
 
 const TableForm = ({ value, onChange }) => {
   const [clickedCancel, setClickedCancel] = useState(false);
