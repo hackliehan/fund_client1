@@ -126,6 +126,12 @@ fundIndexMap.set('090010',{
 });
 fundIndexMap.set('161017',{
     fundCode:'161017',
+    fundName:'富国中证500指数增强',
+    indexCode:'000905',
+    fee:0.15
+});  //中证500
+fundIndexMap.set('161017',{
+    fundCode:'161017',
     fundName:'富国中证500指数',
     indexCode:'000905',
     fee:0.15
