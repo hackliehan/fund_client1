@@ -26,6 +26,7 @@ import styles from './style.less';
 import { fundInfoMap } from './data/fundInfoMap';
 import { initChartConfig } from './data/chartConfig';
 import { renderChart } from './data/chartUtil';
+import EqualTableForm from './components/EqualTableForm';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -50,6 +51,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
   const [chartConfig, setChartConfig] = useState(initChartConfig(strategies));
   const [isEdit, setIsEdit] = useState(false);
   const [editing, setEditing] = useState({});
+  const [showVolTable,setShowVolTable] = useState(true);
 
   const getErrorInfo = (errors) => {
     const errorCount = errors.filter((item) => item.errors.length > 0).length;
@@ -125,6 +127,10 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       name: `${fundInfoMap.get(fundValue).fundName  }--${  strategies.length}`,
     });
   };
+
+  const onStyTypeChange = (styType) =>{
+    setShowVolTable(styType === 'FundVolStrategy'?true:false);
+  }
 
   const editStrategy = (strategy) => {
     setEditing(strategy);
@@ -317,7 +323,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
         render: (data) => {
           return (
             <div>
-              {data.map((factor, index) => {
+              {(data||[]).map((factor, index) => {
                 return (
                   <p key={index} className={styles.tableInnerPara}>
                     {getFactorName(factor)}({factor.baseMoneyRate},{factor.factorRate})
@@ -430,11 +436,32 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
         hideRequiredMark
         initialValues={{
           factorList: [],
+          factors:[],
+          type:'FundVolStrategy'
         }}
         onFinish={onAddStrategy}
         onFinishFailed={onFinishFailed}
       >
         <Card title="策略主体" className={styles.card} bordered={false}>
+          <Row gutter={16}>
+            <Col xl={6} lg={8} md={12} sm={24}>
+              <Form.Item
+                label="策略方法"
+                name="type"
+                rules={[
+                  {
+                    required: true,
+                    message: '请选择策略方法',
+                  },
+                ]}
+              >
+                <Select onChange={onStyTypeChange} placeholder="请选择策略">
+                  <Option value="FundVolStrategy">估值策略</Option>
+                  <Option value="FundEqualStrategy">市值均仓</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
           <Row gutter={16}>
             <Col xl={6} lg={8} md={12} sm={24}>
               <Form.Item
@@ -580,9 +607,16 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
         </Card>
 
         <Card title="回测因子" className={styles.card} bordered={false}>
+        {showVolTable?(
           <Form.Item name="factorList">
             <TableForm />
           </Form.Item>
+        ):(
+          <Form.Item name="factors">
+            <EqualTableForm />
+          </Form.Item>
+        )}
+
         </Card>
       </Form>
 
