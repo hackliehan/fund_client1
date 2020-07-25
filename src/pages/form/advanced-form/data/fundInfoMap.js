@@ -18,6 +18,18 @@ fundIndexMap.set('100038',{
     indexCode:'000300',
     fee:0.12
 })
+fundIndexMap.set('000311',{
+    fundCode:'000311',
+    fundName:'景顺沪深300指数增强',
+    indexCode:'000300',
+    fee:0.12
+})
+fundIndexMap.set('050002',{
+    fundCode:'050002',
+    fundName:'博时沪深300指数A',
+    indexCode:'000300',
+    fee:0.15
+})
 fundIndexMap.set('005827',{
     fundCode:'005827',
     fundName:'易方达蓝筹精选混合',
@@ -60,10 +72,24 @@ fundIndexMap.set('161005',{
     indexCode:'000300',
     fee:0.15
 });
+fundIndexMap.set('163406',{
+    fundCode:'163406',
+    fundName:'兴全合润',
+    agent:'谢治宇',
+    indexCode:'000300',
+    fee:0.12
+});
 fundIndexMap.set('450002',{
     fundCode:'450002',
     fundName:'国富弹性市值混合',
     agent:'赵晓东',
+    indexCode:'000300',
+    fee:0.15
+});
+fundIndexMap.set('206009',{
+    fundCode:'206009',
+    fundName:'鹏华新兴产业混合',
+    agent:'梁浩',
     indexCode:'000300',
     fee:0.15
 });
@@ -86,6 +112,24 @@ fundIndexMap.set('161725',{
     fundName:'招商中证白酒指数分级',
     indexCode:'399997',
     fee:0.1
+});
+fundIndexMap.set('110003',{
+    fundCode:'110003',
+    fundName:'易方达上证50',
+    indexCode:'000016',
+    fee:0.15
+});
+fundIndexMap.set('001548',{
+    fundCode:'001548',
+    fundName:'天弘上证50',
+    indexCode:'000016',
+    fee:0.1
+});
+fundIndexMap.set('001051',{
+    fundCode:'001051',
+    fundName:'华夏上证50ETF链接',
+    indexCode:'000016',
+    fee:0.12
 });
 fundIndexMap.set('110003',{
     fundCode:'110003',
@@ -129,13 +173,25 @@ fundIndexMap.set('161017',{
     fundName:'富国中证500指数增强',
     indexCode:'000905',
     fee:0.15
-});  //中证500
-fundIndexMap.set('161017',{
-    fundCode:'161017',
-    fundName:'富国中证500指数',
+});
+fundIndexMap.set('000478',{
+    fundCode:'000478',
+    fundName:'建信中证500指数',
     indexCode:'000905',
     fee:0.15
-});  //中证500
+}); 
+fundIndexMap.set('160119',{
+    fundCode:'160119',
+    fundName:'南方中证500ETF链接',
+    indexCode:'000905',
+    fee:0.12
+}); 
+fundIndexMap.set('162711',{
+    fundCode:'162711',
+    fundName:'广发中证500ETF链接',
+    indexCode:'000905',
+    fee:0.12
+}); 
 // fundIndexMap.set('217027','399550');  //央视50
 
 
