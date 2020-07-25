@@ -1,5 +1,5 @@
-// const basePath = 'http://118.24.195.56:4000';
-const basePath = 'http://localhost:4000';
+const basePath = 'http://118.24.195.56:4000';
+// const basePath = 'http://localhost:4000';
 
 export const p_login = `${basePath}/account/login`;
 
