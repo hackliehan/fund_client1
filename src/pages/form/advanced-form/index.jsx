@@ -141,9 +141,14 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
     newStrategy.factorList = newStrategy.factorList.map((item) => ({
       ...item,
     }));
+    newStrategy.factors = newStrategy.factors.map((item) => ({
+      ...item,
+    }));
     newStrategy.factorList.cover = true;
+    newStrategy.factors.cover = true;
     styForm.setFieldsValue(newStrategy);
     setIsEdit(true);
+    setShowVolTable(strategy.type==='FundVolStrategy'?true:false);
   };
 
   const onDelOldRecord = async (sty) => {
@@ -251,6 +256,12 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
     return `${max + maxStr  }-${  max === min ? '' : `${minStr ? `${min  }_` : min}`  }${minStr}`;
   };
 
+  const getEqualFactorName = (factor) => {
+    const { max, maxModi, maxPercent } = factor;
+    const maxStr = maxPercent === '0' ? '' : `_${maxModi}_${maxPercent}`;
+    return `${max + maxStr}`;
+  }
+
   useEffect(() => {
     doSearchStyLits(
       {
@@ -278,6 +289,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
           return (
             <div>
               <p className={styles.tableInnerPara}>{text}</p>
+              <p className={styles.tableInnerPara}>{record.type}</p>
               {isNet ? record.createTime : ''}
             </div>
           );
@@ -319,15 +331,21 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       {
         title: '策略因子',
         dataIndex: 'factorList',
-        key: 'factorList+isNet',
-        render: (data) => {
+        key: `factorList ${isNet}`,
+        render: (data,record) => {
+          let factorList = record.type === 'FundVolStrategy'?record.factorList:record.factors;
+          console.log(factorList,record)
           return (
             <div>
-              {(data||[]).map((factor, index) => {
-                return (
+              {(factorList||[]).map((factor, index) => {
+                return record.type === 'FundVolStrategy'?(
                   <p key={index} className={styles.tableInnerPara}>
                     {getFactorName(factor)}({factor.baseMoneyRate},{factor.factorRate})
                   </p>
+                ):(
+                  <p key={index} className={styles.tableInnerPara}>
+                    {getEqualFactorName(factor)}({factor.minMoney},{factor.maxRate},{factor.csi})
+                  </p>                  
                 );
               })}
             </div>
@@ -607,16 +625,12 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
         </Card>
 
         <Card title="回测因子" className={styles.card} bordered={false}>
-        {showVolTable?(
-          <Form.Item name="factorList">
+          <Form.Item style={{display:showVolTable?'block':'none'}} name="factorList">
             <TableForm />
           </Form.Item>
-        ):(
-          <Form.Item name="factors">
+          <Form.Item style={{display:showVolTable?'none':'block'}} name="factors">
             <EqualTableForm />
           </Form.Item>
-        )}
-
         </Card>
       </Form>
 
