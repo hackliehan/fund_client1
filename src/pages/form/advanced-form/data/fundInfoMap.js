@@ -81,6 +81,20 @@ fundIndexMap.set('006228',{
   indexCode:'000300',
   fee:0.15
 });
+fundIndexMap.set('020010',{
+  fundCode:'020010',
+  fundName:'国泰金牛创新成长混合',
+  agent:'程洲',
+  indexCode:'000300',
+  fee:0.15
+});
+fundIndexMap.set('519066',{
+  fundCode:'519066',
+  fundName:'汇添富蓝筹精选混合',
+  agent:'雷鸣',
+  indexCode:'000300',
+  fee:0.15
+});
 fundIndexMap.set('161725',{
     fundCode:'161725',
     fundName:'招商中证白酒指数分级',
