@@ -127,6 +127,12 @@ fundIndexMap.set('161725',{
     indexCode:'399997',
     fee:0.1
 });
+fundIndexMap.set('161130',{
+  fundCode:'161130',
+  fundName:'易方达纳斯达克100指数',
+  indexCode:'000300',
+  fee:0.12
+});
 fundIndexMap.set('110003',{
     fundCode:'110003',
     fundName:'易方达上证50',
@@ -193,19 +199,19 @@ fundIndexMap.set('000478',{
     fundName:'建信中证500指数',
     indexCode:'000905',
     fee:0.15
-}); 
+});
 fundIndexMap.set('160119',{
     fundCode:'160119',
     fundName:'南方中证500ETF链接',
     indexCode:'000905',
     fee:0.12
-}); 
+});
 fundIndexMap.set('162711',{
     fundCode:'162711',
     fundName:'广发中证500ETF链接',
     indexCode:'000905',
     fee:0.12
-}); 
+});
 // fundIndexMap.set('217027','399550');  //央视50
 
 

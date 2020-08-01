@@ -1,7 +1,7 @@
 import echarts from 'echarts'
 import {chartConfigList} from './chartConfig';
 
-export const renderChart = (chartId, data, showConfigList,strategyList) => {
+export const renderChart = (chartId, data, showConfigList,strategyList,className) => {
     const legend = [];
 
     const yAxis = [
@@ -22,7 +22,6 @@ export const renderChart = (chartId, data, showConfigList,strategyList) => {
             show: false,
             type: "value",
             position: 'right',
-            offset: 60,
             index: 2
         }, {
             name: "年化率(%)",
@@ -38,13 +37,20 @@ export const renderChart = (chartId, data, showConfigList,strategyList) => {
             show: false,
             type: "value",
             position: 'right',
-            offset: 100,
+            offset: 60,
             index: 4
-        }
+        },
+        {
+          name: "收益",
+          show: false,
+          type: "value",
+          position: 'left',
+          index: 5
+      }
     ]
 
     const series = [];
-    chartConfigList.forEach((item, index) => {
+    ((showConfigList[0]||{}).config || []).forEach((item, index) => {
         strategyList.forEach((s, sIndex) => {
             const showList = showConfigList[sIndex].config;
             const {
@@ -72,9 +78,7 @@ export const renderChart = (chartId, data, showConfigList,strategyList) => {
     });
 
     const option = {
-        title: {
-            text: '基金收益曲线图'
-        },
+        title: false,
         tooltip: {
             trigger: 'axis'
         },
@@ -105,8 +109,9 @@ export const renderChart = (chartId, data, showConfigList,strategyList) => {
     parentElement.removeChild(chartElement);
     const newElement = document.createElement('div');
     newElement.setAttribute('id',chartId);
+    newElement.setAttribute('className',className);
     newElement.style.width = '100%';
-    newElement.style.height = '600px';
+    newElement.style.height = '300px';
     parentElement.appendChild(newElement);
     const myChart = echarts.init(newElement);
     myChart.setOption(option);

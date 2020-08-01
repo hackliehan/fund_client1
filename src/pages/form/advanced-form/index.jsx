@@ -24,7 +24,7 @@ import TableForm from './components/TableForm';
 import FooterToolbar from './components/FooterToolbar';
 import styles from './style.less';
 import { fundInfoMap } from './data/fundInfoMap';
-import { initChartConfig } from './data/chartConfig';
+import { initChartConfig, getPeConfigList } from './data/chartConfig';
 import { renderChart } from './data/chartUtil';
 import EqualTableForm from './components/EqualTableForm';
 
@@ -111,7 +111,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
   };
 
   const onRefreshChart = () => {
-    renderChart('chart1', backtestResult, chartConfig, strategies);
+    refreshChart()
   };
 
   const onChartConfigChnage = (checked, cIndex, index) => {
@@ -241,7 +241,6 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       type: styInfo._id ? 'fundValBackTest/updateSty' : 'fundValBackTest/addSty',
       payload: styInfo,
     });
-    console.log(rs);
     onSearchStyList();
   };
 
@@ -262,6 +261,35 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
     return `${max + maxStr}`;
   }
 
+  const refreshChart = ()=>{
+    const chartConfig0 = [];
+    const chartConfig1 = [];
+    const chartConfig2 = [];
+    console.log(chartConfig)
+    chartConfig.forEach((configs,sIndex)=>{
+      chartConfig0[sIndex] = {name:configs.name,config:[]}
+      chartConfig1[sIndex] = {name:configs.name,config:[]}
+      chartConfig2[sIndex] = {name:configs.name,config:[]}
+      configs.config.forEach(item=>{
+        const field = item.field;
+        const ids = item.chartIds;
+        if(field === 'pe' && ids.includes(0)){
+          chartConfig0[sIndex].config = [...getPeConfigList(item.show)];
+        }
+        if(field !== 'pe' && ids.includes(1)){
+          chartConfig1[sIndex].config.push({...item});
+        }
+        if(field !== 'pe' && ids.includes(2)){
+          chartConfig2[sIndex].config.push({...item});
+        }
+      });
+    })
+    console.log('configs',chartConfig0,chartConfig1,chartConfig2)
+    renderChart('chart0', backtestResult, chartConfig0, strategies,styles.chart0Wrapper);
+    renderChart('chart1', backtestResult, chartConfig1, strategies,styles.chart1Wrapper);
+    renderChart('chart2', backtestResult, chartConfig2, strategies,styles.chart2Wrapper);
+  }
+
   useEffect(() => {
     doSearchStyLits(
       {
@@ -275,7 +303,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
   useEffect(() => {
     /** update back result */
     if (backtestResult.length > 0) {
-      renderChart('chart1', backtestResult, chartConfig, strategies);
+      refreshChart()
     }
   }, [backtestResult]);
 
@@ -316,17 +344,17 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       {
         title: '指数周期',
         dataIndex: 'during',
-        key: 'during+isNet',
+        key: `during${isNet}`,
       },
       {
         title: '指数算法',
         dataIndex: 'algo',
-        key: 'algo+isNet',
+        key: `algo${isNet}`,
       },
       {
         title: '投资周期日',
         dataIndex: 'weekDay',
-        key: 'weekDay+isNet',
+        key: `weekDay${isNet}`,
       },
       {
         title: '策略因子',
@@ -334,7 +362,6 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
         key: `factorList ${isNet}`,
         render: (data,record) => {
           let factorList = record.type === 'FundVolStrategy'?record.factorList:record.factors;
-          console.log(factorList,record)
           return (
             <div>
               {(factorList||[]).map((factor, index) => {
@@ -345,7 +372,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
                 ):(
                   <p key={index} className={styles.tableInnerPara}>
                     {getEqualFactorName(factor)}({factor.minMoney},{factor.maxRate},{factor.csi})
-                  </p>                  
+                  </p>
                 );
               })}
             </div>
@@ -354,7 +381,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       },
       {
         title: '操作',
-        key: 'action+isNet',
+        key: `action${isNet}`,
         render: (text, record) => {
           if (!isNet) {
             return (
@@ -711,7 +738,9 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       </Card>
 
       <Card title="回测结果图表" className={styles.card} bordered={false}>
-        <div id="chart1" className={styles.chartWrapper} />
+        <div id="chart0" className={styles.chart0Wrapper} />
+        <div id="chart1" className={styles.chart1Wrapper} />
+        <div id="chart2" className={styles.chart2Wrapper} />
       </Card>
 
       <FooterToolbar>
