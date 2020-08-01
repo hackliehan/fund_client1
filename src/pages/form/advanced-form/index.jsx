@@ -265,7 +265,6 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
     const chartConfig0 = [];
     const chartConfig1 = [];
     const chartConfig2 = [];
-    console.log(chartConfig)
     chartConfig.forEach((configs,sIndex)=>{
       chartConfig0[sIndex] = {name:configs.name,config:[]}
       chartConfig1[sIndex] = {name:configs.name,config:[]}
@@ -285,9 +284,9 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       });
     })
     console.log('configs',chartConfig0,chartConfig1,chartConfig2)
-    renderChart('chart0', backtestResult, chartConfig0, strategies,styles.chart0Wrapper);
-    renderChart('chart1', backtestResult, chartConfig1, strategies,styles.chart1Wrapper);
-    renderChart('chart2', backtestResult, chartConfig2, strategies,styles.chart2Wrapper);
+    renderChart('chart0', backtestResult, chartConfig0, strategies,styles.chart0Wrapper,300);
+    renderChart('chart1', backtestResult, chartConfig1, strategies,styles.chart1Wrapper,400);
+    renderChart('chart2', backtestResult, chartConfig2, strategies,styles.chart2Wrapper,400);
   }
 
   useEffect(() => {

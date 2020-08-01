@@ -1,7 +1,7 @@
 import echarts from 'echarts'
 import {chartConfigList} from './chartConfig';
 
-export const renderChart = (chartId, data, showConfigList,strategyList,className) => {
+export const renderChart = (chartId, data, showConfigList,strategyList,className,height) => {
     const legend = [];
 
     const yAxis = [
@@ -84,7 +84,7 @@ export const renderChart = (chartId, data, showConfigList,strategyList,className
         },
         legend: {
             type: 'scroll',
-            bottom: -10,
+            // bottom: -10,
             data: legend
         },
         grid: {
@@ -93,11 +93,11 @@ export const renderChart = (chartId, data, showConfigList,strategyList,className
             bottom: '3%',
             containLabel: true
         },
-        toolbox: {
-            feature: {
-                saveAsImage: {}
-            }
-        },
+        // toolbox: {
+        //     feature: {
+        //         saveAsImage: {}
+        //     }
+        // },
         xAxis: {
             data: data[0].date
         },
@@ -111,7 +111,7 @@ export const renderChart = (chartId, data, showConfigList,strategyList,className
     newElement.setAttribute('id',chartId);
     newElement.setAttribute('className',className);
     newElement.style.width = '100%';
-    newElement.style.height = '300px';
+    newElement.style.height = height+'px';
     parentElement.appendChild(newElement);
     const myChart = echarts.init(newElement);
     myChart.setOption(option);

@@ -25,10 +25,11 @@ export const getPeConfigList = (show)=>{
 
 export const initChartConfig = (strategies)=>{
     const chartConfig = [];
-    const peColor = randomColor();
-    strategies.forEach(item=>{
+    strategies.forEach((item,sIndex)=>{
         const {name} = item;
-        const singleConfig = chartConfigList.map(item=>({...item}));
+        const singleConfig = chartConfigList.map(item=>({
+            ...item
+        }));
         chartConfig.push({
             name,
             config:singleConfig

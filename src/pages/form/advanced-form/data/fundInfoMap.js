@@ -133,6 +133,18 @@ fundIndexMap.set('161130',{
   indexCode:'000300',
   fee:0.12
 });
+fundIndexMap.set('050025',{
+    fundCode:'050025',
+    fundName:'博时标普500ETF链接',
+    indexCode:'000300',
+    fee:0.12
+});
+fundIndexMap.set('161125',{
+    fundCode:'161125',
+    fundName:'易方达标普500指数',
+    indexCode:'000300',
+    fee:0.12
+});
 fundIndexMap.set('110003',{
     fundCode:'110003',
     fundName:'易方达上证50',
