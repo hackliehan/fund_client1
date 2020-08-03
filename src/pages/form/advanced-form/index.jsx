@@ -45,6 +45,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
   const [btForm] = Form.useForm();
   const [styForm] = Form.useForm();
   const [shForm] = Form.useForm();
+  const [fundStyForm] = Form.useForm();
   const [error, setError] = useState([]);
   const [index, setIndex] = useState(0);
   const [strategies, setStrategies] = useState([]);
@@ -135,8 +136,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
   const editStrategy = (strategy) => {
     setEditing(strategy);
     const newStrategy = {
-      ...strategy,
-      fund: strategy.fund.fundCode,
+      ...strategy
     };
     newStrategy.factorList = newStrategy.factorList.map((item) => ({
       ...item,
@@ -156,50 +156,35 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
     onSearchStyList();
   };
 
-  const onAddOldRecord = (sty) => {
-    const isIn = strategies.filter((item) => item._id === sty._id).length > 0;
-    if (isIn) {
-      message.error('该云端策略已存在已选策略列表');
-      return;
+  const onSaveStrategy = (values) =>{
+    values = {
+      ...editing,
+      ...values
     }
-    onAddStrategy(sty, true);
-    message.success('成功应用至当前策略列表!');
-  };
+    setEditing({});
+    saveSty(values);
+  }
 
-  const onAddStrategy = (values, isOld) => {
+  const onAddStrategy = (values) => {
     setError([]);
     const fundInfo = typeof values.fund === 'object' ? values.fund : fundInfoMap.get(values.fund);
     let newStrategies = [...strategies];
-    if (isEdit && !isOld) {
-      values = {
-        ...editing,
-        ...values,
-        fund: fundInfo,
-      };
-      newStrategies = newStrategies.map((item) => {
-        if (item.uuid === values.uuid) {
-          return values;
-        }
-        return item;
-      });
-    } else {
-      const newStrategy = {
-        ...values,
-        fund: fundInfo,
-        key: index,
-        uuid: `${Date.now()  }_${  Math.random()}`,
-      };
-      newStrategies.push(newStrategy);
-      setIndex(index + 1);
-      /** 更新图表设置选项 */
-      const newChartConfig = chartConfig.map((item) => ({
-        ...item,
-      }));
-      newChartConfig.push(initChartConfig([newStrategy])[0]);
-      setChartConfig(newChartConfig);
-    }
+    const styInfo = styList.filter(item=>item._id === values.styCode)[0];
+    const newStrategy = {
+      ...styInfo,
+      name:fundInfo.fundName+'-'+styInfo.name,
+      fund: fundInfo,
+      key: index
+    };
+    newStrategies.push(newStrategy);
+    setIndex(index + 1);
+    /** 更新图表设置选项 */
+    const newChartConfig = chartConfig.map((item) => ({
+      ...item,
+    }));
+    newChartConfig.push(initChartConfig([newStrategy])[0]);
+    setChartConfig(newChartConfig);
     setStrategies(newStrategies);
-    setIsEdit(false);
   };
 
   const onBackStart = () => {
@@ -307,37 +292,24 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
   }, [backtestResult]);
 
   const getStyColumns = (isNet) => {
-    return [
+    const columns = [
       {
         title: '策略',
         dataIndex: 'name',
         key: `name${  isNet}`,
         render: (text, record) => {
-          return (
+          return isNet?(
             <div>
-              <p className={styles.tableInnerPara}>{text}</p>
+              <p className={styles.tableInnerPara}>{text}({record.baseMoney}元)</p>
               <p className={styles.tableInnerPara}>{record.type}</p>
-              {isNet ? record.createTime : ''}
+              <p className={styles.tableInnerPara}>{record.createTime}</p>
             </div>
-          );
-        },
-      },
-      {
-        title: '基金',
-        dataIndex: 'fund',
-        key: `fund${  isNet}`,
-        render: (text, record) => {
-          const { fundName, fundCode, indexCode } = text;
-          return (
+          ):(
             <div>
-              <p className={styles.tableInnerPara}>
-                {fundName}({record.baseMoney}元)
-              </p>
-              <p className={styles.tableInnerPara}>
-                {fundCode}/{indexCode}
-              </p>
-            </div>
-          );
+            <p className={styles.tableInnerPara}>{text}({record.baseMoney}元)</p>
+            <p className={styles.tableInnerPara}>{record.type}</p>
+          </div>
+          )
         },
       },
       {
@@ -377,29 +349,22 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
             </div>
           );
         },
-      },
-      {
+      },{
         title: '操作',
         key: `action${isNet}`,
         render: (text, record) => {
           if (!isNet) {
             return (
               <span>
-                <a onClick={(e) => editStrategy(record)}>编辑</a>
-                <Divider type="vertical" />
                 <Popconfirm title="是否要删除此策略？" onConfirm={() => removeStrategy(record)}>
                   <a>删除</a>
-                </Popconfirm>
-                <Divider type="vertical" />
-                <Popconfirm title="是否确认保存到云端？" onConfirm={() => saveSty(record)}>
-                  <a>云同步</a>
                 </Popconfirm>
               </span>
             );
           }
           return (
             <span>
-              <a onClick={(e) => onAddOldRecord(record)}>应用</a>
+              <a onClick={(e) => editStrategy(record)}>编辑</a>
               <Divider type="vertical" />
               <Popconfirm title="是否要从云端删除此策略？" onConfirm={() => onDelOldRecord(record)}>
                 <a>删除</a>
@@ -407,8 +372,31 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
             </span>
           );
         },
-      },
+      }
     ];
+    if(!isNet){
+      columns.splice(1,0,{
+        title: '基金',
+        dataIndex: 'fund',
+        key: `fund${  isNet}`,
+        render: (text, record) => {
+          const { fundName, fundCode, indexCode } = text;
+          return (
+            <div>
+              <p className={styles.tableInnerPara}>
+                {fundName}
+              </p>
+              <p className={styles.tableInnerPara}>
+                {fundCode}/{indexCode}
+              </p>
+            </div>
+          );
+        },
+      });
+    }else{
+    }
+
+    return columns;
   };
 
   return (
@@ -483,49 +471,27 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
           factors:[],
           type:'FundVolStrategy'
         }}
-        onFinish={onAddStrategy}
+        onFinish={onSaveStrategy}
         onFinishFailed={onFinishFailed}
       >
         <Card title="策略主体" className={styles.card} bordered={false}>
           <Row gutter={16}>
             <Col xl={6} lg={8} md={12} sm={24}>
               <Form.Item
-                label="策略方法"
-                name="type"
-                rules={[
-                  {
-                    required: true,
-                    message: '请选择策略方法',
-                  },
-                ]}
-              >
-                <Select onChange={onStyTypeChange} placeholder="请选择策略">
-                  <Option value="FundVolStrategy">估值策略</Option>
-                  <Option value="FundEqualStrategy">市值均仓</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col xl={6} lg={8} md={12} sm={24}>
-              <Form.Item
-                label="测试基金"
-                name="fund"
-                rules={[
-                  {
-                    required: true,
-                    message: '请选择需要测试的基金',
-                  },
-                ]}
-              >
-                <Select onChange={onStyFundChange} placeholder="请选择基金">
-                  {fundList.map((fund) => (
-                    <Option key={fund.fundCode} value={fund.fundCode}>
-                      {fund.fundName}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
+                  label="策略方法"
+                  name="type"
+                  rules={[
+                    {
+                      required: true,
+                      message: '请选择策略方法',
+                    },
+                  ]}
+                >
+                  <Select onChange={onStyTypeChange} placeholder="请选择策略">
+                    <Option value="FundVolStrategy">估值策略</Option>
+                    <Option value="FundEqualStrategy">市值均仓</Option>
+                  </Select>
+                </Form.Item>
             </Col>
             <Col
               xl={{
@@ -660,55 +626,110 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
         </Card>
       </Form>
 
-      <Tabs defaultActiveKey="1" className={styles.card}>
-        <TabPane key="1" tab="策略列表">
-          <Table columns={getStyColumns()} dataSource={strategies} pagination={false} />
-        </TabPane>
-        <TabPane key="2" tab="收藏列表">
-          <Form
-            form={shForm}
-            layout="horizontal"
-            hideRequiredMark
-            initialValues={{
-              styName: '',
-              fundCode: '',
-            }}
-          >
-            <Row>
-              <Col xl={6} lg={8} md={12} sm={24}>
-                <Form.Item label="策略名称" name="styName" rules={[]}>
-                  <Input type="text" placeholder="请输入策略名" />
-                </Form.Item>
-              </Col>
-              <Col xl={6} lg={8} md={12} sm={24}>
-                <Form.Item label="策略基金" name="fundCode" rules={[]}>
-                  <Select placeholder="请选择策略基金">
-                    <Option key="0001" value="">
-                      未选择
+      <Card title="可用策略列表" className={styles.card} bordered={false}>
+        <Form
+              form={shForm}
+              layout="horizontal"
+              hideRequiredMark
+              initialValues={{
+                styName: '',
+                fundCode: '',
+              }}
+            >
+              <Row>
+                <Col xl={6} lg={8} md={12} sm={24}>
+                  <Form.Item label="策略名称" name="styName" rules={[]}>
+                    <Input type="text" placeholder="请输入策略名" />
+                  </Form.Item>
+                </Col>
+                <Col xl={6} lg={8} md={12} sm={24}>
+                  <Button type="primary" onClick={() => onSearchStyList()}>
+                    查询
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+            <Table
+              size="small"
+              columns={getStyColumns(true)}
+              dataSource={styList}
+              pagination={pagination}
+            />
+      </Card>
+
+      <Form
+        form={fundStyForm}
+        layout="vertical"
+        hideRequiredMark
+        initialValues={{
+          factorList: [],
+          factors:[],
+          type:'FundVolStrategy'
+        }}
+        onFinish={onAddStrategy}
+        onFinishFailed={onFinishFailed}
+      >
+        <Card title="策略主体" className={styles.card} bordered={false}>
+          <Row gutter={16}>
+            <Col xl={6} lg={8} md={12} sm={24}>
+              <Form.Item
+                label="测试基金"
+                name="fund"
+                rules={[
+                  {
+                    required: true,
+                    message: '请选择需要测试的基金',
+                  },
+                ]}
+              >
+                <Select placeholder="请选择基金">
+                  {fundList.map((fund) => (
+                    <Option key={fund.fundCode} value={fund.fundCode}>
+                      {fund.fundName}
                     </Option>
-                    {fundList.map((fund) => (
-                      <Option key={fund.fundCode} value={fund.fundCode}>
-                        {fund.fundName}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col xl={6} lg={8} md={12} sm={24}>
-                <Button type="primary" onClick={() => onSearchStyList()}>
-                  查询
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-          <Table
-            size="small"
-            columns={getStyColumns(true)}
-            dataSource={styList}
-            pagination={pagination}
-          />
-        </TabPane>
-      </Tabs>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col
+              xl={{
+                span: 6,
+                offset: 3,
+              }}
+              lg={{
+                span: 8,
+              }}
+              md={{
+                span: 12,
+              }}
+              sm={24}
+            >
+              <Form.Item
+                label="应用策略"
+                name="styCode"
+                rules={[
+                  {
+                    required: true,
+                    message: '请选择所需策略',
+                  },
+                ]}
+              >
+                <Select placeholder="请选择策略">
+                  {styList.map((sty) => (
+                    <Option key={sty._id} value={sty._id}>
+                      {sty.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Card>
+      </Form>
+
+      <Card title="策略组合列表" className={styles.card} bordered={false}>
+        <Table columns={getStyColumns()} dataSource={strategies} pagination={false} />
+      </Card>
 
       <Card title="回测结果设置" className={styles.card} bordered={false}>
         {chartConfig.map((singleConfig, cIndex) => {
@@ -745,7 +766,10 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       <FooterToolbar>
         {getErrorInfo(error)}
         <Button type="primary" onClick={() => styForm?.submit()}>
-          {isEdit ? '保存' : '添加'}策略
+          保存策略
+        </Button>
+        <Button type="primary" onClick={() => fundStyForm?.submit()}>
+          添加策略
         </Button>
         <Button type="primary" onClick={() => onRefreshChart()}>
           刷新回测图表
