@@ -172,6 +172,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
     const styInfo = styList.filter(item=>item._id === values.styCode)[0];
     const newStrategy = {
       ...styInfo,
+      baseMoney:values.baseMoney||styInfo.baseMoney,
       name:fundInfo.fundName+'-'+styInfo.name,
       fund: fundInfo,
       key: index
@@ -721,6 +722,23 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
                     </Option>
                   ))}
                 </Select>
+              </Form.Item>
+            </Col>
+            <Col
+              xl={{
+                span: 6,
+                offset: 3,
+              }}
+              lg={{
+                span: 8,
+              }}
+              md={{
+                span: 12,
+              }}
+              sm={24}
+            >
+              <Form.Item label="基础金额" name="baseMoney">
+                <Input type="number" placeholder="请输入基础金额" />
               </Form.Item>
             </Col>
           </Row>
