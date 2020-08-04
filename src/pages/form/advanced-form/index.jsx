@@ -402,384 +402,390 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
 
   return (
     <PageHeaderWrapper title="基金回测">
-      <Form
-        form={btForm}
-        layout="vertical"
-        hideRequiredMark
-        initialValues={{
-          dateRange: [moment(new Date()).subtract(3, 'years'), moment(new Date())],
-        }}
-      >
-        <Card title="回测主体" className={styles.card} bordered={false}>
-          <Row gutter={16}>
-            <Col lg={10} md={12} sm={24}>
-              <Form.Item
-                label={fieldLabels.dateRange}
-                name="dateRange"
-                rules={[
-                  {
-                    required: true,
-                    message: '请选择回测日期区间',
-                  },
-                ]}
-              >
-                <RangePicker
-                  placeholder={['开始日期', '结束日期']}
-                  style={{
-                    width: '100%',
+      <Tabs defaultActiveKey="1">
+        <TabPane key="1" tab="回测">
+          <Form
+            form={btForm}
+            layout="vertical"
+            hideRequiredMark
+            initialValues={{
+              dateRange: [moment(new Date()).subtract(3, 'years'), moment(new Date())],
+            }}
+          >
+            <Card title="回测主体" className={styles.card} bordered={false}>
+              <Row gutter={16}>
+                <Col lg={10} md={12} sm={24}>
+                  <Form.Item
+                    label={fieldLabels.dateRange}
+                    name="dateRange"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请选择回测日期区间',
+                      },
+                    ]}
+                  >
+                    <RangePicker
+                      placeholder={['开始日期', '结束日期']}
+                      style={{
+                        width: '100%',
+                      }}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col
+                  lg={{
+                    span: 10,
+                    offset: 4,
                   }}
-                />
-              </Form.Item>
-            </Col>
-            <Col
-              lg={{
-                span: 10,
-                offset: 4,
-              }}
-              md={{
-                span: 12,
-              }}
-              sm={24}
-            >
-              <Form.Item
-                label={fieldLabels.baseMoney}
-                name="baseMoney"
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入基础金额',
-                  },
-                ]}
-              >
-                <Input
-                  style={{
-                    width: '100%',
+                  md={{
+                    span: 12,
                   }}
-                  type="number"
-                  placeholder="请输入基础金额"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Card>
-      </Form>
-      <Form
-        form={styForm}
-        layout="vertical"
-        hideRequiredMark
-        initialValues={{
-          factorList: [],
-          factors:[],
-          type:'FundVolStrategy'
-        }}
-        onFinish={onSaveStrategy}
-        onFinishFailed={onFinishFailed}
-      >
-        <Card title="策略主体" className={styles.card} bordered={false}>
-          <Row gutter={16}>
-            <Col xl={6} lg={8} md={12} sm={24}>
-              <Form.Item
-                  label="策略方法"
-                  name="type"
+                  sm={24}
+                >
+                  <Form.Item
+                    label={fieldLabels.baseMoney}
+                    name="baseMoney"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请输入基础金额',
+                      },
+                    ]}
+                  >
+                    <Input
+                      style={{
+                        width: '100%',
+                      }}
+                      type="number"
+                      placeholder="请输入基础金额"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Card>
+          </Form>
+            <Form
+            form={fundStyForm}
+            layout="vertical"
+            hideRequiredMark
+            initialValues={{
+              factorList: [],
+              factors:[],
+              type:'FundVolStrategy'
+            }}
+            onFinish={onAddStrategy}
+            onFinishFailed={onFinishFailed}
+          >
+            <Card title="策略主体" className={styles.card} bordered={false}>
+              <Row gutter={16}>
+                <Col xl={6} lg={8} md={12} sm={24}>
+                  <Form.Item
+                    label="测试基金"
+                    name="fund"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请选择需要测试的基金',
+                      },
+                    ]}
+                  >
+                    <Select placeholder="请选择基金">
+                      {fundList.map((fund) => (
+                        <Option key={fund.fundCode} value={fund.fundCode}>
+                          {fund.fundName}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col
+                  xl={{
+                    span: 6,
+                    offset: 3,
+                  }}
+                  lg={{
+                    span: 8,
+                  }}
+                  md={{
+                    span: 12,
+                  }}
+                  sm={24}
+                >
+                  <Form.Item
+                    label="应用策略"
+                    name="styCode"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请选择所需策略',
+                      },
+                    ]}
+                  >
+                    <Select placeholder="请选择策略">
+                      {styList.map((sty) => (
+                        <Option key={sty._id} value={sty._id}>
+                          {sty.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col
+                  xl={{
+                    span: 6,
+                    offset: 3,
+                  }}
+                  lg={{
+                    span: 8,
+                  }}
+                  md={{
+                    span: 12,
+                  }}
+                  sm={24}
+                >
+                  <Form.Item label="基础金额" name="baseMoney">
+                    <Input type="number" placeholder="请输入基础金额" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Card>
+          </Form>
+
+          <Card title="策略组合列表" className={styles.card} bordered={false}>
+            <Table columns={getStyColumns()} dataSource={strategies} pagination={false} />
+          </Card>
+
+          <Card title="回测结果设置" className={styles.card} bordered={false}>
+            {chartConfig.map((singleConfig, cIndex) => {
+              const doc = (
+                <div key={cIndex}>
+                  <h4>{singleConfig.name}</h4>
+                  <Row>
+                    {singleConfig.config.map((single, index) => {
+                      return (
+                        <Col key={single.field + index} xl={4} lg={4} md={8} sm={12}>
+                          <div className={styles.configBox} key={single.field + cIndex}>
+                            <span>{single.name}</span>
+                            <Switch
+                              checked={single.show}
+                              onChange={(checked) => onChartConfigChnage(checked, cIndex, index)}
+                            />
+                          </div>
+                        </Col>
+                      );
+                    })}
+                  </Row>
+                </div>
+              );
+              return doc;
+            })}
+          </Card>
+
+          <Card title="回测结果图表" className={styles.card} bordered={false}>
+            <div id="chart0" className={styles.chart0Wrapper} />
+            <div id="chart1" className={styles.chart1Wrapper} />
+            <div id="chart2" className={styles.chart2Wrapper} />
+          </Card>
+          </TabPane>
+        <TabPane key="2" tab="策略">
+        <Form
+          form={styForm}
+          layout="vertical"
+          hideRequiredMark
+          initialValues={{
+            factorList: [],
+            factors:[],
+            type:'FundVolStrategy'
+          }}
+          onFinish={onSaveStrategy}
+          onFinishFailed={onFinishFailed}
+        >
+          <Card title="策略主体" className={styles.card} bordered={false}>
+            <Row gutter={16}>
+              <Col xl={6} lg={8} md={12} sm={24}>
+                <Form.Item
+                    label="策略方法"
+                    name="type"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请选择策略方法',
+                      },
+                    ]}
+                  >
+                    <Select onChange={onStyTypeChange} placeholder="请选择策略">
+                      <Option value="FundVolStrategy">估值策略</Option>
+                      <Option value="FundEqualStrategy">市值均仓</Option>
+                    </Select>
+                  </Form.Item>
+              </Col>
+              <Col
+                xl={{
+                  span: 6,
+                  offset: 3,
+                }}
+                lg={{
+                  span: 8,
+                }}
+                md={{
+                  span: 12,
+                }}
+                sm={24}
+              >
+                <Form.Item
+                  label="策略名称"
+                  name="name"
                   rules={[
                     {
                       required: true,
-                      message: '请选择策略方法',
+                      message: '请输入策略名称',
                     },
                   ]}
                 >
-                  <Select onChange={onStyTypeChange} placeholder="请选择策略">
-                    <Option value="FundVolStrategy">估值策略</Option>
-                    <Option value="FundEqualStrategy">市值均仓</Option>
+                  <Input placeholder="请输入策略名称" />
+                </Form.Item>
+              </Col>
+              <Col
+                xl={{
+                  span: 6,
+                  offset: 3,
+                }}
+                lg={{
+                  span: 8,
+                }}
+                md={{
+                  span: 24,
+                }}
+                sm={24}
+              >
+                <Form.Item label="基础金额" name="baseMoney">
+                  <Input type="number" placeholder="请输入基础金额" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col xl={6} lg={8} md={12} sm={24}>
+                <Form.Item
+                  label="投资周期日"
+                  name="weekDay"
+                  rules={[
+                    {
+                      required: true,
+                      message: '请输入投资周期日',
+                    },
+                  ]}
+                >
+                  <Input type="number" placeholder="请输入投资周期日" />
+                </Form.Item>
+              </Col>
+              <Col
+                xl={{
+                  span: 6,
+                  offset: 3,
+                }}
+                lg={{
+                  span: 8,
+                }}
+                md={{
+                  span: 12,
+                }}
+                sm={24}
+              >
+                <Form.Item
+                  label="估值周期"
+                  name="during"
+                  rules={[
+                    {
+                      required: true,
+                      message: '请选择估值周期',
+                    },
+                  ]}
+                >
+                  <Select placeholder="请选择估值周期">
+                    <Option value="y5">五年</Option>
+                    <Option value="y10">十年</Option>
+                    <Option value="y20">20年</Option>
+                    <Option value="y3">三年</Option>
+                    <Option value="fs">全部</Option>
                   </Select>
                 </Form.Item>
-            </Col>
-            <Col
-              xl={{
-                span: 6,
-                offset: 3,
-              }}
-              lg={{
-                span: 8,
-              }}
-              md={{
-                span: 12,
-              }}
-              sm={24}
-            >
-              <Form.Item
-                label="策略名称"
-                name="name"
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入策略名称',
-                  },
-                ]}
+              </Col>
+              <Col
+                xl={{
+                  span: 6,
+                  offset: 3,
+                }}
+                lg={{
+                  span: 8,
+                }}
+                md={{
+                  span: 24,
+                }}
+                sm={24}
               >
-                <Input placeholder="请输入策略名称" />
-              </Form.Item>
-            </Col>
-            <Col
-              xl={{
-                span: 6,
-                offset: 3,
-              }}
-              lg={{
-                span: 8,
-              }}
-              md={{
-                span: 24,
-              }}
-              sm={24}
-            >
-              <Form.Item label="基础金额" name="baseMoney">
-                <Input type="number" placeholder="请输入基础金额" />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col xl={6} lg={8} md={12} sm={24}>
-              <Form.Item
-                label="投资周期日"
-                name="weekDay"
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入投资周期日',
-                  },
-                ]}
+                <Form.Item
+                  label="估值算法"
+                  name="algo"
+                  rules={[
+                    {
+                      required: true,
+                      message: '请选择估值算法',
+                    },
+                  ]}
+                >
+                  <Select placeholder="请选择估值算法">
+                    <Option value="mcw">市值加权</Option>
+                    <Option value="ew">市值等权</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Card>
+
+          <Card title="回测因子" className={styles.card} bordered={false}>
+            <Form.Item style={{display:showVolTable?'block':'none'}} name="factorList">
+              <TableForm />
+            </Form.Item>
+            <Form.Item style={{display:showVolTable?'none':'block'}} name="factors">
+              <EqualTableForm />
+            </Form.Item>
+          </Card>
+        </Form>
+
+        <Card title="可用策略列表" className={styles.card} bordered={false}>
+          <Form
+                form={shForm}
+                layout="horizontal"
+                hideRequiredMark
+                initialValues={{
+                  styName: '',
+                  fundCode: '',
+                }}
               >
-                <Input type="number" placeholder="请输入投资周期日" />
-              </Form.Item>
-            </Col>
-            <Col
-              xl={{
-                span: 6,
-                offset: 3,
-              }}
-              lg={{
-                span: 8,
-              }}
-              md={{
-                span: 12,
-              }}
-              sm={24}
-            >
-              <Form.Item
-                label="估值周期"
-                name="during"
-                rules={[
-                  {
-                    required: true,
-                    message: '请选择估值周期',
-                  },
-                ]}
-              >
-                <Select placeholder="请选择估值周期">
-                  <Option value="y5">五年</Option>
-                  <Option value="y10">十年</Option>
-                  <Option value="y20">20年</Option>
-                  <Option value="y3">三年</Option>
-                  <Option value="fs">全部</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col
-              xl={{
-                span: 6,
-                offset: 3,
-              }}
-              lg={{
-                span: 8,
-              }}
-              md={{
-                span: 24,
-              }}
-              sm={24}
-            >
-              <Form.Item
-                label="估值算法"
-                name="algo"
-                rules={[
-                  {
-                    required: true,
-                    message: '请选择估值算法',
-                  },
-                ]}
-              >
-                <Select placeholder="请选择估值算法">
-                  <Option value="mcw">市值加权</Option>
-                  <Option value="ew">市值等权</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
+                <Row>
+                  <Col xl={6} lg={8} md={12} sm={24}>
+                    <Form.Item label="策略名称" name="styName" rules={[]}>
+                      <Input type="text" placeholder="请输入策略名" />
+                    </Form.Item>
+                  </Col>
+                  <Col xl={6} lg={8} md={12} sm={24}>
+                    <Button type="primary" onClick={() => onSearchStyList()}>
+                      查询
+                    </Button>
+                  </Col>
+                </Row>
+              </Form>
+              <Table
+                size="small"
+                columns={getStyColumns(true)}
+                dataSource={styList}
+                pagination={pagination}
+              />
         </Card>
 
-        <Card title="回测因子" className={styles.card} bordered={false}>
-          <Form.Item style={{display:showVolTable?'block':'none'}} name="factorList">
-            <TableForm />
-          </Form.Item>
-          <Form.Item style={{display:showVolTable?'none':'block'}} name="factors">
-            <EqualTableForm />
-          </Form.Item>
-        </Card>
-      </Form>
-
-      <Card title="可用策略列表" className={styles.card} bordered={false}>
-        <Form
-              form={shForm}
-              layout="horizontal"
-              hideRequiredMark
-              initialValues={{
-                styName: '',
-                fundCode: '',
-              }}
-            >
-              <Row>
-                <Col xl={6} lg={8} md={12} sm={24}>
-                  <Form.Item label="策略名称" name="styName" rules={[]}>
-                    <Input type="text" placeholder="请输入策略名" />
-                  </Form.Item>
-                </Col>
-                <Col xl={6} lg={8} md={12} sm={24}>
-                  <Button type="primary" onClick={() => onSearchStyList()}>
-                    查询
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
-            <Table
-              size="small"
-              columns={getStyColumns(true)}
-              dataSource={styList}
-              pagination={pagination}
-            />
-      </Card>
-
-      <Form
-        form={fundStyForm}
-        layout="vertical"
-        hideRequiredMark
-        initialValues={{
-          factorList: [],
-          factors:[],
-          type:'FundVolStrategy'
-        }}
-        onFinish={onAddStrategy}
-        onFinishFailed={onFinishFailed}
-      >
-        <Card title="策略主体" className={styles.card} bordered={false}>
-          <Row gutter={16}>
-            <Col xl={6} lg={8} md={12} sm={24}>
-              <Form.Item
-                label="测试基金"
-                name="fund"
-                rules={[
-                  {
-                    required: true,
-                    message: '请选择需要测试的基金',
-                  },
-                ]}
-              >
-                <Select placeholder="请选择基金">
-                  {fundList.map((fund) => (
-                    <Option key={fund.fundCode} value={fund.fundCode}>
-                      {fund.fundName}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col
-              xl={{
-                span: 6,
-                offset: 3,
-              }}
-              lg={{
-                span: 8,
-              }}
-              md={{
-                span: 12,
-              }}
-              sm={24}
-            >
-              <Form.Item
-                label="应用策略"
-                name="styCode"
-                rules={[
-                  {
-                    required: true,
-                    message: '请选择所需策略',
-                  },
-                ]}
-              >
-                <Select placeholder="请选择策略">
-                  {styList.map((sty) => (
-                    <Option key={sty._id} value={sty._id}>
-                      {sty.name}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col
-              xl={{
-                span: 6,
-                offset: 3,
-              }}
-              lg={{
-                span: 8,
-              }}
-              md={{
-                span: 12,
-              }}
-              sm={24}
-            >
-              <Form.Item label="基础金额" name="baseMoney">
-                <Input type="number" placeholder="请输入基础金额" />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Card>
-      </Form>
-
-      <Card title="策略组合列表" className={styles.card} bordered={false}>
-        <Table columns={getStyColumns()} dataSource={strategies} pagination={false} />
-      </Card>
-
-      <Card title="回测结果设置" className={styles.card} bordered={false}>
-        {chartConfig.map((singleConfig, cIndex) => {
-          const doc = (
-            <div key={cIndex}>
-              <h4>{singleConfig.name}</h4>
-              <Row>
-                {singleConfig.config.map((single, index) => {
-                  return (
-                    <Col key={single.field + index} xl={4} lg={4} md={8} sm={12}>
-                      <div className={styles.configBox} key={single.field + cIndex}>
-                        <span>{single.name}</span>
-                        <Switch
-                          checked={single.show}
-                          onChange={(checked) => onChartConfigChnage(checked, cIndex, index)}
-                        />
-                      </div>
-                    </Col>
-                  );
-                })}
-              </Row>
-            </div>
-          );
-          return doc;
-        })}
-      </Card>
-
-      <Card title="回测结果图表" className={styles.card} bordered={false}>
-        <div id="chart0" className={styles.chart0Wrapper} />
-        <div id="chart1" className={styles.chart1Wrapper} />
-        <div id="chart2" className={styles.chart2Wrapper} />
-      </Card>
+        </TabPane>
+      </Tabs>
 
       <FooterToolbar>
         {getErrorInfo(error)}
