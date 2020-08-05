@@ -41,6 +41,7 @@ fundInfoMap.forEach((fund) => {
   fundList.push(fund);
 });
 
+
 const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, pagination }) => {
   const [btForm] = Form.useForm();
   const [styForm] = Form.useForm();
