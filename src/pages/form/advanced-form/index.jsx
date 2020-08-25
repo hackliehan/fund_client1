@@ -37,8 +37,8 @@ const fieldLabels = {
 };
 const tableData = [];
 const fundList = [];
-fundInfoMap.forEach((fund) => {
-  fundList.push(fund);
+fundInfoMap.forEach((fund,index) => {
+  fundList.push({...fund,fundIndex:index});
 });
 
 
@@ -493,7 +493,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
                   >
                     <Select placeholder="请选择基金">
                       {fundList.map((fund) => (
-                        <Option key={fund.fundCode} value={fund.fundCode}>
+                        <Option key={fund.fundIndex} value={fund.fundIndex}>
                           {fund.fundName}
                         </Option>
                       ))}

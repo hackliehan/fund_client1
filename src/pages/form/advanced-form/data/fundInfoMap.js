@@ -121,6 +121,34 @@ fundIndexMap.set('519066',{
   indexCode:'000300',
   fee:0.15
 });
+fundIndexMap.set('hs519674',{
+  fundCode:'519674',
+  fundName:'银河创新成长-hs300',
+  agent:'郑巍山',
+  indexCode:'000300',
+  fee:0.15
+});
+fundIndexMap.set('cy519674',{
+  fundCode:'519674',
+  fundName:'银河创新成长-cyb',
+  agent:'雷鸣',
+  indexCode:'399006',
+  fee:0.15
+});
+fundIndexMap.set('hs320007',{
+  fundCode:'320007',
+  fundName:'诺安成长混合-hs300',
+  agent:'蔡嵩松',
+  indexCode:'000300',
+  fee:0.15
+});
+fundIndexMap.set('cy320007',{
+  fundCode:'320007',
+  fundName:'诺安成长混合-cyb',
+  agent:'蔡嵩松',
+  indexCode:'399006',
+  fee:0.15
+});
 fundIndexMap.set('161725',{
     fundCode:'161725',
     fundName:'招商中证白酒指数分级',
