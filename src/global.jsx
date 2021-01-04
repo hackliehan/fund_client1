@@ -4,8 +4,13 @@ import { formatMessage } from 'umi';
 import Axios from 'axios';
 import defaultSettings from '../config/defaultSettings';
 
+
+
 Axios.defaults.withCredentials = true;
 Axios.defaults.crossDomain=true;
+Axios.defaults.headers = {
+  "Origin":window.location.origin
+};
 
 const { pwa } = defaultSettings; // if pwa is true
 

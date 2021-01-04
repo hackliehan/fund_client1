@@ -114,6 +114,20 @@ fundIndexMap.set('020010',{
   indexCode:'000300',
   fee:0.15
 });
+fundIndexMap.set('519732',{
+  fundCode:'519732',
+  fundName:'交银定期支付双息平衡',
+  agent:'杨浩',
+  indexCode:'000300',
+  fee:0.15
+});
+fundIndexMap.set('001410',{
+  fundCode:'001410',
+  fundName:'信达澳银新能源产业股票',
+  agent:'杨浩',
+  indexCode:'000300',
+  fee:0.15
+});
 fundIndexMap.set('519066',{
   fundCode:'519066',
   fundName:'汇添富蓝筹精选混合',
@@ -133,6 +147,20 @@ fundIndexMap.set('cy519674',{
   fundName:'银河创新成长-cyb',
   agent:'雷鸣',
   indexCode:'399006',
+  fee:0.15
+});
+fundIndexMap.set('kj-519674',{
+  fundCode:'519674',
+  fundName:'银河创新成长-中证科技',
+  agent:'雷鸣',
+  indexCode:'931186',
+  fee:0.15
+});
+fundIndexMap.set('kj50-519674',{
+  fundCode:'519674',
+  fundName:'银河创新成长-科技50',
+  agent:'雷鸣',
+  indexCode:'931180',
   fee:0.15
 });
 fundIndexMap.set('hs320007',{
