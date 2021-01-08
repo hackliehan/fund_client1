@@ -117,7 +117,14 @@ fundIndexMap.set('020010',{
 fundIndexMap.set('519732',{
   fundCode:'519732',
   fundName:'交银定期支付双息平衡',
-  agent:'杨浩',
+  agent:'冯明远',
+  indexCode:'000300',
+  fee:0.15
+});
+fundIndexMap.set('003095',{
+  fundCode:'003095',
+  fundName:'中欧医疗健康混合A',
+  agent:'葛兰',
   indexCode:'000300',
   fee:0.15
 });
