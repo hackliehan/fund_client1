@@ -37,10 +37,9 @@ const fieldLabels = {
 };
 const tableData = [];
 const fundList = [];
-fundInfoMap.forEach((fund,index) => {
-  fundList.push({...fund,fundIndex:index});
+fundInfoMap.forEach((fund, index) => {
+  fundList.push({ ...fund, fundIndex: index });
 });
-
 
 const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, pagination }) => {
   const [btForm] = Form.useForm();
@@ -53,7 +52,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
   const [chartConfig, setChartConfig] = useState(initChartConfig(strategies));
   const [isEdit, setIsEdit] = useState(false);
   const [editing, setEditing] = useState({});
-  const [showVolTable,setShowVolTable] = useState(true);
+  const [showVolTable, setShowVolTable] = useState(true);
 
   const getErrorInfo = (errors) => {
     const errorCount = errors.filter((item) => item.errors.length > 0).length;
@@ -113,7 +112,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
   };
 
   const onRefreshChart = () => {
-    refreshChart()
+    refreshChart();
   };
 
   const onChartConfigChnage = (checked, cIndex, index) => {
@@ -126,18 +125,18 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
 
   const onStyFundChange = (fundValue) => {
     styForm.setFieldsValue({
-      name: `${fundInfoMap.get(fundValue).fundName  }--${  strategies.length}`,
+      name: `${fundInfoMap.get(fundValue).fundName}--${strategies.length}`,
     });
   };
 
-  const onStyTypeChange = (styType) =>{
-    setShowVolTable(styType === 'FundVolStrategy'?true:false);
-  }
+  const onStyTypeChange = (styType) => {
+    setShowVolTable(styType === 'FundVolStrategy');
+  };
 
   const editStrategy = (strategy) => {
     setEditing(strategy);
     const newStrategy = {
-      ...strategy
+      ...strategy,
     };
     newStrategy.factorList = newStrategy.factorList.map((item) => ({
       ...item,
@@ -149,7 +148,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
     newStrategy.factors.cover = true;
     styForm.setFieldsValue(newStrategy);
     setIsEdit(true);
-    setShowVolTable(strategy.type==='FundVolStrategy'?true:false);
+    setShowVolTable(strategy.type === 'FundVolStrategy');
   };
 
   const onDelOldRecord = async (sty) => {
@@ -157,26 +156,35 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
     onSearchStyList();
   };
 
-  const onSaveStrategy = (values) =>{
+  const onSaveStrategy = (values) => {
     values = {
       ...editing,
-      ...values
-    }
+      ...values,
+    };
     setEditing({});
     saveSty(values);
-  }
+  };
 
   const onAddStrategy = (values) => {
     setError([]);
-    const fundInfo = typeof values.fund === 'object' ? values.fund : fundInfoMap.get(values.fund);
-    let newStrategies = [...strategies];
-    const styInfo = styList.filter(item=>item._id === values.styCode)[0];
+    let fundInfo = typeof values.fund === 'object' ? values.fund : fundInfoMap.get(values.fund);
+    if (values.fundCode.length > 0) {
+      fundInfo = {
+        agent: '未知',
+        fee: 0.15,
+        fundCode: values.fundCode,
+        fundName: `编码-${values.fundCode}`,
+        indexCode: values.indexCode,
+      };
+    }
+    const newStrategies = [...strategies];
+    const styInfo = styList.filter((item) => item._id === values.styCode)[0];
     const newStrategy = {
       ...styInfo,
-      baseMoney:values.baseMoney||styInfo.baseMoney,
-      name:fundInfo.fundName+'-'+styInfo.name,
+      baseMoney: values.baseMoney || styInfo.baseMoney,
+      name: `${fundInfo.fundName}-${styInfo.name}`,
       fund: fundInfo,
-      key: index
+      key: index,
     };
     newStrategies.push(newStrategy);
     setIndex(index + 1);
@@ -239,42 +247,42 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
     const { max, maxModi, maxPercent, min, minModi, minPercent } = factory;
     const maxStr = maxPercent === '0' ? '' : `_${maxModi}_${maxPercent}`;
     const minStr = minPercent === '0' ? '' : `${minModi}_${minPercent}`;
-    return `${max + maxStr  }-${  max === min ? '' : `${minStr ? `${min  }_` : min}`  }${minStr}`;
+    return `${max + maxStr}-${max === min ? '' : `${minStr ? `${min}_` : min}`}${minStr}`;
   };
 
   const getEqualFactorName = (factor) => {
     const { max, maxModi, maxPercent } = factor;
     const maxStr = maxPercent === '0' ? '' : `_${maxModi}_${maxPercent}`;
     return `${max + maxStr}`;
-  }
+  };
 
-  const refreshChart = ()=>{
+  const refreshChart = () => {
     const chartConfig0 = [];
     const chartConfig1 = [];
     const chartConfig2 = [];
-    chartConfig.forEach((configs,sIndex)=>{
-      chartConfig0[sIndex] = {name:configs.name,config:[]}
-      chartConfig1[sIndex] = {name:configs.name,config:[]}
-      chartConfig2[sIndex] = {name:configs.name,config:[]}
-      configs.config.forEach(item=>{
-        const field = item.field;
+    chartConfig.forEach((configs, sIndex) => {
+      chartConfig0[sIndex] = { name: configs.name, config: [] };
+      chartConfig1[sIndex] = { name: configs.name, config: [] };
+      chartConfig2[sIndex] = { name: configs.name, config: [] };
+      configs.config.forEach((item) => {
+        const { field } = item;
         const ids = item.chartIds;
-        if(field === 'pe' && ids.includes(0)){
+        if (field === 'pe' && ids.includes(0)) {
           chartConfig0[sIndex].config = [...getPeConfigList(item.show)];
         }
-        if(field !== 'pe' && ids.includes(1)){
-          chartConfig1[sIndex].config.push({...item});
+        if (field !== 'pe' && ids.includes(1)) {
+          chartConfig1[sIndex].config.push({ ...item });
         }
-        if(field !== 'pe' && ids.includes(2)){
-          chartConfig2[sIndex].config.push({...item});
+        if (field !== 'pe' && ids.includes(2)) {
+          chartConfig2[sIndex].config.push({ ...item });
         }
       });
-    })
-    console.log('configs',chartConfig0,chartConfig1,chartConfig2)
-    renderChart('chart0', backtestResult, chartConfig0, strategies,styles.chart0Wrapper,300);
-    renderChart('chart1', backtestResult, chartConfig1, strategies,styles.chart1Wrapper,400);
-    renderChart('chart2', backtestResult, chartConfig2, strategies,styles.chart2Wrapper,400);
-  }
+    });
+    console.log('configs', chartConfig0, chartConfig1, chartConfig2);
+    renderChart('chart0', backtestResult, chartConfig0, strategies, styles.chart0Wrapper, 300);
+    renderChart('chart1', backtestResult, chartConfig1, strategies, styles.chart1Wrapper, 400);
+    renderChart('chart2', backtestResult, chartConfig2, strategies, styles.chart2Wrapper, 400);
+  };
 
   useEffect(() => {
     doSearchStyLits(
@@ -289,7 +297,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
   useEffect(() => {
     /** update back result */
     if (backtestResult.length > 0) {
-      refreshChart()
+      refreshChart();
     }
   }, [backtestResult]);
 
@@ -298,20 +306,24 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
       {
         title: '策略',
         dataIndex: 'name',
-        key: `name${  isNet}`,
+        key: `name${isNet}`,
         render: (text, record) => {
-          return isNet?(
+          return isNet ? (
             <div>
-              <p className={styles.tableInnerPara}>{text}({record.baseMoney}元)</p>
+              <p className={styles.tableInnerPara}>
+                {text}({record.baseMoney}元)
+              </p>
               <p className={styles.tableInnerPara}>{record.type}</p>
               <p className={styles.tableInnerPara}>{record.createTime}</p>
             </div>
-          ):(
+          ) : (
             <div>
-            <p className={styles.tableInnerPara}>{text}({record.baseMoney}元)</p>
-            <p className={styles.tableInnerPara}>{record.type}</p>
-          </div>
-          )
+              <p className={styles.tableInnerPara}>
+                {text}({record.baseMoney}元)
+              </p>
+              <p className={styles.tableInnerPara}>{record.type}</p>
+            </div>
+          );
         },
       },
       {
@@ -333,16 +345,16 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
         title: '策略因子',
         dataIndex: 'factorList',
         key: `factorList ${isNet}`,
-        render: (data,record) => {
-          let factorList = record.type === 'FundVolStrategy'?record.factorList:record.factors;
+        render: (data, record) => {
+          const factorList = record.type === 'FundVolStrategy' ? record.factorList : record.factors;
           return (
             <div>
-              {(factorList||[]).map((factor, index) => {
-                return record.type === 'FundVolStrategy'?(
+              {(factorList || []).map((factor, index) => {
+                return record.type === 'FundVolStrategy' ? (
                   <p key={index} className={styles.tableInnerPara}>
                     {getFactorName(factor)}({factor.baseMoneyRate},{factor.factorRate})
                   </p>
-                ):(
+                ) : (
                   <p key={index} className={styles.tableInnerPara}>
                     {getEqualFactorName(factor)}({factor.minMoney},{factor.maxRate},{factor.csi})
                   </p>
@@ -351,7 +363,8 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
             </div>
           );
         },
-      },{
+      },
+      {
         title: '操作',
         key: `action${isNet}`,
         render: (text, record) => {
@@ -374,20 +387,18 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
             </span>
           );
         },
-      }
+      },
     ];
-    if(!isNet){
-      columns.splice(1,0,{
+    if (!isNet) {
+      columns.splice(1, 0, {
         title: '基金',
         dataIndex: 'fund',
-        key: `fund${  isNet}`,
+        key: `fund${isNet}`,
         render: (text, record) => {
           const { fundName, fundCode, indexCode } = text;
           return (
             <div>
-              <p className={styles.tableInnerPara}>
-                {fundName}
-              </p>
+              <p className={styles.tableInnerPara}>{fundName}</p>
               <p className={styles.tableInnerPara}>
                 {fundCode}/{indexCode}
               </p>
@@ -395,7 +406,7 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
           );
         },
       });
-    }else{
+    } else {
     }
 
     return columns;
@@ -466,14 +477,14 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
               </Row>
             </Card>
           </Form>
-            <Form
+          <Form
             form={fundStyForm}
             layout="vertical"
             hideRequiredMark
             initialValues={{
               factorList: [],
-              factors:[],
-              type:'FundVolStrategy'
+              factors: [],
+              type: 'FundVolStrategy',
             }}
             onFinish={onAddStrategy}
             onFinishFailed={onFinishFailed}
@@ -550,6 +561,42 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
                   </Form.Item>
                 </Col>
               </Row>
+              <Row gutter={16}>
+                <Col
+                  xl={{
+                    span: 6,
+                    offset: 3,
+                  }}
+                  lg={{
+                    span: 8,
+                  }}
+                  md={{
+                    span: 12,
+                  }}
+                  sm={24}
+                >
+                  <Form.Item label="基金代码" name="fundCode">
+                    <Input type="text" placeholder="请输入基金代码(可选)" />
+                  </Form.Item>
+                </Col>
+                <Col
+                  xl={{
+                    span: 6,
+                    offset: 3,
+                  }}
+                  lg={{
+                    span: 8,
+                  }}
+                  md={{
+                    span: 12,
+                  }}
+                  sm={24}
+                >
+                  <Form.Item label="指数代码" name="indexCode">
+                    <Input type="text" placeholder="请输入指数代码(可选)" />
+                  </Form.Item>
+                </Col>
+              </Row>
             </Card>
           </Form>
 
@@ -588,24 +635,24 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
             <div id="chart1" className={styles.chart1Wrapper} />
             <div id="chart2" className={styles.chart2Wrapper} />
           </Card>
-          </TabPane>
+        </TabPane>
         <TabPane key="2" tab="策略">
-        <Form
-          form={styForm}
-          layout="vertical"
-          hideRequiredMark
-          initialValues={{
-            factorList: [],
-            factors:[],
-            type:'FundVolStrategy'
-          }}
-          onFinish={onSaveStrategy}
-          onFinishFailed={onFinishFailed}
-        >
-          <Card title="策略主体" className={styles.card} bordered={false}>
-            <Row gutter={16}>
-              <Col xl={6} lg={8} md={12} sm={24}>
-                <Form.Item
+          <Form
+            form={styForm}
+            layout="vertical"
+            hideRequiredMark
+            initialValues={{
+              factorList: [],
+              factors: [],
+              type: 'FundVolStrategy',
+            }}
+            onFinish={onSaveStrategy}
+            onFinishFailed={onFinishFailed}
+          >
+            <Card title="策略主体" className={styles.card} bordered={false}>
+              <Row gutter={16}>
+                <Col xl={6} lg={8} md={12} sm={24}>
+                  <Form.Item
                     label="策略方法"
                     name="type"
                     rules={[
@@ -620,171 +667,170 @@ const AdvancedForm = ({ submitting, dispatch, backtestResult, styList, paginatio
                       <Option value="FundEqualStrategy">市值均仓</Option>
                     </Select>
                   </Form.Item>
-              </Col>
-              <Col
-                xl={{
-                  span: 6,
-                  offset: 3,
-                }}
-                lg={{
-                  span: 8,
-                }}
-                md={{
-                  span: 12,
-                }}
-                sm={24}
-              >
-                <Form.Item
-                  label="策略名称"
-                  name="name"
-                  rules={[
-                    {
-                      required: true,
-                      message: '请输入策略名称',
-                    },
-                  ]}
+                </Col>
+                <Col
+                  xl={{
+                    span: 6,
+                    offset: 3,
+                  }}
+                  lg={{
+                    span: 8,
+                  }}
+                  md={{
+                    span: 12,
+                  }}
+                  sm={24}
                 >
-                  <Input placeholder="请输入策略名称" />
-                </Form.Item>
-              </Col>
-              <Col
-                xl={{
-                  span: 6,
-                  offset: 3,
-                }}
-                lg={{
-                  span: 8,
-                }}
-                md={{
-                  span: 24,
-                }}
-                sm={24}
-              >
-                <Form.Item label="基础金额" name="baseMoney">
-                  <Input type="number" placeholder="请输入基础金额" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col xl={6} lg={8} md={12} sm={24}>
-                <Form.Item
-                  label="投资周期日"
-                  name="weekDay"
-                  rules={[
-                    {
-                      required: true,
-                      message: '请输入投资周期日',
-                    },
-                  ]}
+                  <Form.Item
+                    label="策略名称"
+                    name="name"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请输入策略名称',
+                      },
+                    ]}
+                  >
+                    <Input placeholder="请输入策略名称" />
+                  </Form.Item>
+                </Col>
+                <Col
+                  xl={{
+                    span: 6,
+                    offset: 3,
+                  }}
+                  lg={{
+                    span: 8,
+                  }}
+                  md={{
+                    span: 24,
+                  }}
+                  sm={24}
                 >
-                  <Input type="number" placeholder="请输入投资周期日" />
-                </Form.Item>
-              </Col>
-              <Col
-                xl={{
-                  span: 6,
-                  offset: 3,
-                }}
-                lg={{
-                  span: 8,
-                }}
-                md={{
-                  span: 12,
-                }}
-                sm={24}
-              >
-                <Form.Item
-                  label="估值周期"
-                  name="during"
-                  rules={[
-                    {
-                      required: true,
-                      message: '请选择估值周期',
-                    },
-                  ]}
+                  <Form.Item label="基础金额" name="baseMoney">
+                    <Input type="number" placeholder="请输入基础金额" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col xl={6} lg={8} md={12} sm={24}>
+                  <Form.Item
+                    label="投资周期日"
+                    name="weekDay"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请输入投资周期日',
+                      },
+                    ]}
+                  >
+                    <Input type="number" placeholder="请输入投资周期日" />
+                  </Form.Item>
+                </Col>
+                <Col
+                  xl={{
+                    span: 6,
+                    offset: 3,
+                  }}
+                  lg={{
+                    span: 8,
+                  }}
+                  md={{
+                    span: 12,
+                  }}
+                  sm={24}
                 >
-                  <Select placeholder="请选择估值周期">
-                    <Option value="y5">五年</Option>
-                    <Option value="y10">十年</Option>
-                    <Option value="y20">20年</Option>
-                    <Option value="y3">三年</Option>
-                    <Option value="fs">全部</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col
-                xl={{
-                  span: 6,
-                  offset: 3,
-                }}
-                lg={{
-                  span: 8,
-                }}
-                md={{
-                  span: 24,
-                }}
-                sm={24}
-              >
-                <Form.Item
-                  label="估值算法"
-                  name="algo"
-                  rules={[
-                    {
-                      required: true,
-                      message: '请选择估值算法',
-                    },
-                  ]}
+                  <Form.Item
+                    label="估值周期"
+                    name="during"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请选择估值周期',
+                      },
+                    ]}
+                  >
+                    <Select placeholder="请选择估值周期">
+                      <Option value="y5">五年</Option>
+                      <Option value="y10">十年</Option>
+                      <Option value="y20">20年</Option>
+                      <Option value="y3">三年</Option>
+                      <Option value="fs">全部</Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col
+                  xl={{
+                    span: 6,
+                    offset: 3,
+                  }}
+                  lg={{
+                    span: 8,
+                  }}
+                  md={{
+                    span: 24,
+                  }}
+                  sm={24}
                 >
-                  <Select placeholder="请选择估值算法">
-                    <Option value="mcw">市值加权</Option>
-                    <Option value="ew">市值等权</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
+                  <Form.Item
+                    label="估值算法"
+                    name="algo"
+                    rules={[
+                      {
+                        required: true,
+                        message: '请选择估值算法',
+                      },
+                    ]}
+                  >
+                    <Select placeholder="请选择估值算法">
+                      <Option value="mcw">市值加权</Option>
+                      <Option value="ew">市值等权</Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Card>
+
+            <Card title="回测因子" className={styles.card} bordered={false}>
+              <Form.Item style={{ display: showVolTable ? 'block' : 'none' }} name="factorList">
+                <TableForm />
+              </Form.Item>
+              <Form.Item style={{ display: showVolTable ? 'none' : 'block' }} name="factors">
+                <EqualTableForm />
+              </Form.Item>
+            </Card>
+          </Form>
+
+          <Card title="可用策略列表" className={styles.card} bordered={false}>
+            <Form
+              form={shForm}
+              layout="horizontal"
+              hideRequiredMark
+              initialValues={{
+                styName: '',
+                fundCode: '',
+              }}
+            >
+              <Row>
+                <Col xl={6} lg={8} md={12} sm={24}>
+                  <Form.Item label="策略名称" name="styName" rules={[]}>
+                    <Input type="text" placeholder="请输入策略名" />
+                  </Form.Item>
+                </Col>
+                <Col xl={6} lg={8} md={12} sm={24}>
+                  <Button type="primary" onClick={() => onSearchStyList()}>
+                    查询
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+            <Table
+              size="small"
+              columns={getStyColumns(true)}
+              dataSource={styList}
+              pagination={pagination}
+            />
           </Card>
-
-          <Card title="回测因子" className={styles.card} bordered={false}>
-            <Form.Item style={{display:showVolTable?'block':'none'}} name="factorList">
-              <TableForm />
-            </Form.Item>
-            <Form.Item style={{display:showVolTable?'none':'block'}} name="factors">
-              <EqualTableForm />
-            </Form.Item>
-          </Card>
-        </Form>
-
-        <Card title="可用策略列表" className={styles.card} bordered={false}>
-          <Form
-                form={shForm}
-                layout="horizontal"
-                hideRequiredMark
-                initialValues={{
-                  styName: '',
-                  fundCode: '',
-                }}
-              >
-                <Row>
-                  <Col xl={6} lg={8} md={12} sm={24}>
-                    <Form.Item label="策略名称" name="styName" rules={[]}>
-                      <Input type="text" placeholder="请输入策略名" />
-                    </Form.Item>
-                  </Col>
-                  <Col xl={6} lg={8} md={12} sm={24}>
-                    <Button type="primary" onClick={() => onSearchStyList()}>
-                      查询
-                    </Button>
-                  </Col>
-                </Row>
-              </Form>
-              <Table
-                size="small"
-                columns={getStyColumns(true)}
-                dataSource={styList}
-                pagination={pagination}
-              />
-        </Card>
-
         </TabPane>
       </Tabs>
 
